@@ -2,7 +2,7 @@
 
 A prototype for using the relay component of Infura.
 
-It can either be cloned and launched as a local app or visit [demo-page]() to try it. Remember to change `YOUR_INFURA_PROJECT_ID` for your Infura project ID as there is not a default one.
+It can either be cloned and launched as a local app or visit [demo-page](https://contract-relayer.herokuapp.com?infuraId=<YOUR_INFURA_PROJECT_ID>) to try it. Remember to change `YOUR_INFURA_PROJECT_ID` for your Infura project ID as there is not a default one.
 
 ## Requirements
 
