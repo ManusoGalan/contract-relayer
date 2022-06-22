@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 
 const Main = () => {
+  // eslint-disable-next-line no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [infuraConnected, isInfuraConnected] = useState(false);
@@ -20,13 +21,17 @@ const Main = () => {
   const [signer, setSigner] = useState("");
   const [contractAddress, setContractAddress] = useState("");
   const [contractAbi, changeContractAbi] = useState([]);
+  
+  //Neccesary to reaculate accordion
   const [contractInputs, changeContractInputs] = useState([]);
+  const [result, setResult] = useState("0x")
 
   useEffect(() => {
     web3.eth
       .getBlockNumber()
       .then(isInfuraConnected(true))
       .catch((e) => isInfuraConnected(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const ipfs = create({
@@ -101,9 +106,11 @@ const Main = () => {
         abiProperies={contractAbi}
         inputs={contractInputs}
         inputsHandler={changeContractInputs}
+        result={result}
+        resultHandler={setResult}
       ></SignAndSend>
     ),
-    heightState: [contractInputs],
+    heightState: [contractInputs, result],
   };
 
   const collapses =

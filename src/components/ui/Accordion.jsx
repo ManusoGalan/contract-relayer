@@ -9,6 +9,7 @@ const Accordion = ({ collapses }) => {
       {collapses.map((collapse, index) => {
         return (
           <Collapse
+            key={`accordion-collapse-${index}`}
             index={index}
             title={collapse.title}
             isCollapsed={index === activeCollapse ? false : true}

@@ -5,6 +5,7 @@ import Select from "../ui/Select";
 import Button from "../ui/Button";
 import Alert from "../ui/Alert";
 import { awaitReceiptInfura, showAndHideWithTimeout } from "../../utils/utils";
+import Popover from "../ui/Popover";
 
 const SignAndSend = ({
   itxProvider,
@@ -13,12 +14,15 @@ const SignAndSend = ({
   contractAddress,
   inputs,
   inputsHandler,
+  result,
+  resultHandler,
 }) => {
   //const loadedContract = new window.web3.eth.Contract(abiProperies)
 
   // React state
   const [signedTx, setSignedTransaction] = useState(null);
   const [selectedValue, setSelectedValue] = useState(null);
+  const [sentTransactionHash, setSentTransactionHash] = useState("");
 
   // Alert states
   const [badInputs, hasBadInputs] = useState(false);
@@ -46,6 +50,7 @@ const SignAndSend = ({
       );
 
       setSignedTransaction(null);
+      resultHandler("0x");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedValue]);
@@ -166,14 +171,24 @@ const SignAndSend = ({
       isSendingTransaction(true);
 
       const relayTx = await itxProvider.relay.sendTransaction(tx, sign);
-      console.log(
-        await awaitReceiptInfura(itxProvider, relayTx.relayTransactionHash)
+      const confirmedTx = await awaitReceiptInfura(itxProvider, relayTx.relayTransactionHash)
+
+      console.log(confirmedTx)
+
+      showAndHideWithTimeout(
+        setSentTransactionHash,
+        confirmedTx.transactionHash,
+        ""
       );
 
-      console.log(await window.web3.eth.call({
-        to: tx.to,
-        data: tx.data
-      }))
+      resultHandler(
+        await window.web3.eth.call({
+          to: tx.to,
+          data: tx.data,
+        })
+      );
+
+      setSignedTransaction(null);
     } catch (e) {
       console.error(e);
       showAndHideWithTimeout(hasErrorWhileSending);
@@ -194,11 +209,12 @@ const SignAndSend = ({
             valueHandler={setSelectedValue}
           ></Select>
         </div>
-        <hr className="block mb-4 md:hidden"></hr>
+        <hr className="block md:hidden"></hr>
         <div className="md:w-2/4 md:pl-8">
           {inputs.map((input, index) => {
             return (
               <InputWithoutVerification
+                key={`contract-input-${index}`}
                 labelText={`Input Field #${index + 1} (${input.name}: ${
                   input.type
                 })`}
@@ -229,6 +245,21 @@ const SignAndSend = ({
           </Button>
         )}
       </div>
+      {result === "0x" ? (
+        <></>
+      ) : (
+        <div className="mt-4">
+          <p className="flex items-center justify-start">
+            <span className="font-bold bg-gradient-to-r from-indigo-500 to-fuchsia-500 bg-clip-text text-transparent mr-2">
+              Result{" "}
+            </span>
+            <Popover text="The result is shown as an hexadecimal string, it needs to be converted to get the final result."></Popover>
+          </p>
+          <div className="mt-2 p-2 rounded bg-slate-200 font-mono">
+            <p className="break-all">{result}</p>
+          </div>
+        </div>
+      )}
       <Alert condition={badInputs}>
         <strong className="font-bold text-red-600">Inputs are not valid</strong>
         <p className="mt-4">
@@ -251,6 +282,21 @@ const SignAndSend = ({
         <p className="mt-4">
           There was an error while sending/retrieving the transaction. Please
           send a new one.
+        </p>
+      </Alert>
+      <Alert condition={sentTransactionHash !== ""}>
+        <strong className="font-bold bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-transparent bg-clip-text">
+          Sending confirmed!
+        </strong>
+        <p className="mt-4">
+          New transaction can be reviewed at{" "}
+          <a
+            className="text-transparent font-bold bg-gradient-to-r from-indigo-500 to-fuchsia-500 bg-clip-text break-words"
+            href={`https://${process.env.REACT_APP_ETHEREUM_NETWORK}.etherscan.io/tx/${sentTransactionHash}`}
+            target="_blank"
+            rel="noreferrer"
+          >{`https://${process.env.REACT_APP_ETHEREUM_NETWORK}.etherscan.io/tx/${sentTransactionHash}`}</a>
+          .
         </p>
       </Alert>
     </div>
