@@ -37,7 +37,7 @@ const Main = () => {
   const auth =
     'Basic ' + Buffer.from('2AfzUDA96eLo1rg9zJxfFNYVRqM' + ':' + '680d3246159e4e3b17e780a02268858c').toString('base64');
   
-  const ipfs = ipfsClient.create({
+  const ipfs = create({
     host: 'ipfs.infura.io',
     port: 5001,
     protocol: 'https',
