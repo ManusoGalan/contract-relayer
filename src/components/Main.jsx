@@ -34,9 +34,17 @@ const Main = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const ipfs = create(
-    new URL('https://2AfzUDA96eLo1rg9zJxfFNYVRqM:680d3246159e4e3b17e780a02268858c@ipfs.infura.io:5001')
-  );
+  const auth =
+    'Basic ' + Buffer.from('2AfzUDA96eLo1rg9zJxfFNYVRqM' + ':' + '680d3246159e4e3b17e780a02268858c').toString('base64');
+  
+  const ipfs = ipfsClient.create({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    headers: {
+        authorization: auth,
+    },
+});
 
   const infuraId = searchParams.get("infuraId");
 
