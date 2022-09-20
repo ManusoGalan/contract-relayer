@@ -34,12 +34,9 @@ const Main = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const ipfs = create({
-    protocol: "https",
-    host: "ipfs.io",
-    apiPath: "ipfs",
-    port: 443,
-  });
+  const ipfs = create(
+    new URL('https://2AfzUDA96eLo1rg9zJxfFNYVRqM:680d3246159e4e3b17e780a02268858c@ipfs.infura.io:5001')
+  );
 
   const infuraId = searchParams.get("infuraId");
 
