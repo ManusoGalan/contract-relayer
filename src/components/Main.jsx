@@ -36,9 +36,9 @@ const Main = () => {
 
   const ipfs = create({
     protocol: "https",
-    host: "ipfs.infura.io",
-    apiPath: "api/v0",
-    port: 5001,
+    host: "ipfs.io",
+    apiPath: "ipfs",
+    port: 80,
   });
 
   const infuraId = searchParams.get("infuraId");
