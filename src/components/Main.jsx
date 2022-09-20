@@ -38,7 +38,7 @@ const Main = () => {
     protocol: "https",
     host: "ipfs.io",
     apiPath: "ipfs",
-    port: 80,
+    port: 443,
   });
 
   const infuraId = searchParams.get("infuraId");
